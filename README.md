@@ -4,19 +4,16 @@ Author: Hirotaka Tominaga. The scripts and C source are released under the MIT L
 
 The numerical outputs are distributed separately in the associated Zenodo data archive. To reproduce Stage A, extract the archive so that its `analysis/` directory sits alongside `scripts/` and `src/` in this repository. The associated data archive is version 1.0.0, DOI: https://doi.org/10.5281/zenodo.24296955 (the DOI resolves after publication).
 
-This archive contains the stored numerical outputs and the scripts from which the figures, tables and the numbers
-quoted in the paper and its supplementary material can be regenerated, together with the scripts that produced the
-outputs. Paths are relative to this directory.
+This repository contains the scripts and simulation source used to produce the outputs and regenerate the figures, tables and numbers in the paper and supplementary material. The outputs are in the separately deposited data archive. Paths below refer to the combined code and data directories.
 
 ## Two levels of reproduction
 
 **Stage A: regeneration from stored outputs (no numerical integration).** The figures, Tables I-III and the
 counts and ranges quoted in the text are recomputed from the files under `analysis/`. This takes a few minutes and
 was checked on 2026-10-28: all figure PNGs were reproduced pixel for pixel, and `upo_table.json` and
-`aggregates.json` were reproduced exactly, from this directory alone.
+`aggregates.json` were reproduced exactly, from the combined code and data files.
 
-**Stage B: recomputation from initial states.** The scripts that produced the outputs are included, with the initial
-states, random seeds, integration methods, tolerances, transients and measurement times (Sec. III of the paper and
+**Stage B: recomputation from initial states.** The scripts that produced the outputs are included here; initial states are in the data archive. Random seeds, integration methods, tolerances, transients and measurement times (Sec. III of the paper and
 the docstrings of the scripts). The code and settings needed for Stage B are included, but the recomputation has not
 been verified from this archive. Stage B reproductions are expected to recover the qualitative Lyapunov-sign
 classification and comparable finite-time estimates, rather than identical numerical values. Finite-time Lyapunov
