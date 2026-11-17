@@ -13,8 +13,8 @@ counts and ranges quoted in the text are recomputed from the files under `analys
 was checked on 2026-10-28: all figure PNGs were reproduced pixel for pixel, and `upo_table.json` and
 `aggregates.json` were reproduced exactly, from the combined code and data files.
 
-**Stage B: recomputation from initial states.** The scripts that produced the outputs are included here; initial states are in the data archive. Random seeds, integration methods, tolerances, transients and measurement times (Sec. III of the paper and
-the docstrings of the scripts). The code and settings needed for Stage B are included, but the recomputation has not
+**Stage B: recomputation from initial states.** The scripts that produced the outputs are included here; initial states are in the data archive. Random seeds, integration methods, tolerances, transients and measurement times are documented in Sec. III of the paper and
+the docstrings of the scripts. The code and settings needed for Stage B are included, but the recomputation has not
 been verified from this archive. Stage B reproductions are expected to recover the qualitative Lyapunov-sign
 classification and comparable finite-time estimates, rather than identical numerical values. Finite-time Lyapunov
 estimates of 15000 time units differ by up to about 15% between integration methods and tolerances (Sec. III D); for
