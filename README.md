@@ -1,0 +1,108 @@
+# Data and scripts for "Chaotic Cluster Dynamics and Transverse Stability in Globally Coupled Excitable Elements with Repulsive Interactions"
+
+Author: Hirotaka Tominaga. The scripts and C source are released under the MIT License.
+
+The numerical outputs are distributed separately in the associated Zenodo data archive. To reproduce Stage A, extract the archive so that its `analysis/` directory sits alongside `scripts/` and `src/` in this repository. The associated data archive is version 1.0.0, DOI: https://doi.org/10.5281/zenodo.24296955 (the DOI resolves after publication).
+
+This archive contains the stored numerical outputs and the scripts from which the figures, tables and the numbers
+quoted in the paper and its supplementary material can be regenerated, together with the scripts that produced the
+outputs. Paths are relative to this directory.
+
+## Two levels of reproduction
+
+**Stage A: regeneration from stored outputs (no numerical integration).** The figures, Tables I-III and the
+counts and ranges quoted in the text are recomputed from the files under `analysis/`. This takes a few minutes and
+was checked on 2026-10-28: all figure PNGs were reproduced pixel for pixel, and `upo_table.json` and
+`aggregates.json` were reproduced exactly, from this directory alone.
+
+**Stage B: recomputation from initial states.** The scripts that produced the outputs are included, with the initial
+states, random seeds, integration methods, tolerances, transients and measurement times (Sec. III of the paper and
+the docstrings of the scripts). The code and settings needed for Stage B are included, but the recomputation has not
+been verified from this archive. Stage B reproductions are expected to recover the qualitative Lyapunov-sign
+classification and comparable finite-time estimates, rather than identical numerical values. Finite-time Lyapunov
+estimates of 15000 time units differ by up to about 15% between integration methods and tolerances (Sec. III D); for
+C5b the transverse exponent is small (about -0.0015), so even the sign of short-time estimates requires care.
+
+## Stage A: commands
+
+```
+python scripts/plot_paper2_ch4.py          # Fig. 1  -> analysis/paper2_figs/chaos_sections.{pdf,png}
+python scripts/plot_pd_cascade_fine.py --width 3.4 --height 4.2 --suffix _col --notitle --labels abc def
+                                           # Fig. 2  -> analysis/chaos_check/pd_cascade_fine_{95,3444}_col.{pdf,png}
+python scripts/plot_paper2_figs.py         # Figs. 3, 4 -> analysis/paper2_figs/{transverse_range,p5_branch_3444}.*
+python scripts/plot_paper2_ch7.py          # Fig. 5  -> analysis/paper2_figs/torus_sections.*
+python scripts/table_paper2_upo.py         # Table II -> analysis/paper2_figs/upo_table.{json,md}
+python scripts/paper2_aggregates.py        # Tables I, III, SI, SII and numbers in the text -> analysis/paper2_figs/aggregates.json
+```
+
+| Item | Inputs (under `analysis/`) | Produced by (Stage B) |
+|---|---|---|
+| Fig. 1 | `chaos_check/edgefull_*_bubsec2.json` | `chaos_edge_check.py full --phase_sec` (noise 1e-8, seed 1, 2e5) |
+| Fig. 2 | `chaos_check/scan_95_q*.json`, `scan_low133_q*.json`, `pd_L*.json`, `pd_low133_L*.json` | `chaos_check.py scan`, `pd_cascade_check.py` |
+| Fig. 3 | scans above, `reduced_chaos_census/candidate_run143_q*_r1e-10.json`, `chaos_check/edge_{95,3444,143}_*.json` | `chaos_check.py scan`, `chaos_candidate_check.py`, `chaos_edge_check.py` |
+| Fig. 4 | `chaos_check/p5arc_3444_{exit,pdcheck}.json` | `p5_arc_3444.py` |
+| Fig. 5 | `switching_check/slow_return_{0090_r1e-10,0046_r1e-12,0026_h0.025}.npz` | `slow_return.py` |
+| Table I | `chaos_check/verify_{95,low133}_r1e-1{1,2}.json` (QR); `chaos_check/scan_95_q-1.000.json`, `scan_low133_q-1.200.json`, `radau_check/chaos_*.json` (lambda_perp, return times); `reduced_chaos_census/candidate_run143_q-0.8000_r1e-1{0,1,2}.json` (C5b) | `chaos_check.py`, `radau_check.py chaos`, `chaos_candidate_check.py` |
+| Table II | `chaos_check/pdlong_*_L*_chaos.json` | `pd_longitudinal_check.py` |
+| Table III | `switching_check/torus_lyapunov_00{90,46,26}.json`, `slow_return_*.json` | `torus_lyapunov.py`, `slow_return.py` |
+| Table SI | `chaos_check/edgefull_*_bubsec2.json`, `edge_*_end_fwd.json`, `pdlong_*_L*_chaos.json` (`upoamp_*` for the text of Sec. S1) | `chaos_edge_check.py`, `pd_longitudinal_check.py`, `upo_amplification_check.py` |
+| Table SII | `chaos_check/life_*_q*.json` | `chaos_edge_check.py lifetime` |
+| Table SIII | `paper2_figs/example_origins.json` (extracted rows of the ensemble records) | `eps_cluster_ensemble.py`, `switching_check.py select`, `reduced_chaos_census.py select` |
+| Sec. IV B (noise runs) | `chaos_check/edgefull_*_bub.json` | `chaos_edge_check.py full` |
+| T1-T3 partitions | `switching_check/torus_states_paper2.npz` (the three stored states used) | `switching_renoise.py --states` |
+
+All tables and the numbers quoted in the text that come from stored outputs are regenerated by the scripts above.
+
+## Examples and their origin
+
+| Label | Internal number | Ensemble | N | eps, eps K | Seed |
+|---|---|---|---|---|---|
+| C7 | run 95 | E1 | 100 | 0.25, -1.0 | 5042 |
+| C5a | run 3444 | E1 | 100 | 0.35, -1.2 | 5022 |
+| C5b | run 143 | E2 | 100 | 0.375, -0.8 | 5115 |
+| T1 | run 90 | E1 | 400 | 0.2, -0.9 | 5005 |
+| T2 | run 46 | E1 | 1000 | 0.25, -0.9 | 5001 |
+| T3 | run 26 | E1 | 1000 | 0.2, -0.9 | 5044 |
+
+The internal numbers are positions in our lists of selected runs, and the numbers in file names (95, 3444 or
+low133, 143, 0090, 0046, 0026) refer to them.
+
+## Ensembles (the full ensemble records are not included)
+
+The examples come from two ensembles of direct simulations of the full system. Only the rows of the examples are
+included (`analysis/paper2_figs/example_origins.json`). Reproducing a listed example is therefore possible from this
+archive; reproducing the searches over the whole ensembles requires recomputing the ensembles with the settings below.
+
+- Initial state of a run: NumPy `default_rng(seed)` (PCG64), x_i ~ U(-2.5, 2.5) for all i, then y_i ~ U(-2, 2).
+- Integration: fourth-order Runge-Kutta, step 0.005, to t = 4e4, by `src/fhn_replay.c` (compiled with gcc 13.3.0;
+  the build command is `gcc_cmd` in `scripts/eps_cluster_ensemble.py`).
+- Clusters: connected components in the maximum norm at threshold 1e-4 at the final time; a run is flagged when its
+  count depends on the threshold (1e-3 to 1e-8) or changes over the last five checkpoints, 2000 time units apart.
+- E1: N in {50, 100, 200, 400, 1000}, eps in {0.2, 0.25, 0.3, 0.35, 0.4}, eps K in {-0.4, -0.5, ..., -1.0, -1.2},
+  seeds 5001-5050 at each point (10000 runs).
+- E2: N = 100, eps from 0.150 to 0.450 in steps of 0.025, eps K from -0.3 to -2.1 in steps of 0.1, seeds 5001-5200
+  (49400 runs).
+- Selection of the examples: Sec. IV A of the paper (checks of every final state of E1; second survey of the
+  reduced system: 150 unflagged final states each with 5, 6 and 7 clusters drawn from E2 with 0.2 <= eps <= 0.4 and
+  -1.2 <= eps K <= -0.4, generator `default_rng(0)`; first survey: `default_rng([m, round(1000 eps),
+  round(-1000 eps K), s])`).
+- T1-T3: the excluded E1 runs were continued with noise from `default_rng(10000 + i)` (`switching_renoise.py`); the
+  stored states used are at t = 15770, 19620 and 13010.
+
+## Software
+
+- Regeneration (Stage A) on 2026-10-28: Python 3.12.15, NumPy 2.5.4, SciPy 1.17.1, matplotlib 3.11.2.
+- The SciPy version used for the original computations (2026-10-22 to 10-27) was not recorded and is not known; it
+  is not necessarily the version above.
+- The original computations were distributed over several Linux machines. In this archive the default of
+  `eps_cluster_ensemble.py --hosts` is `local:4`, and its remote directory name was made generic; no other change was
+  made to the scripts used for the computations.
+- With `--hosts local:N` the ensemble script runs the simulator on this machine and does not use ssh; ssh (and
+  `systemd-run --user` for memory limits) is used only for remote hosts.
+- Docstrings and comments of the scripts refer to the author's working notes (for example `docs/RESULTS_NOTES.md`)
+  and to file names of the original project; these notes are not part of this archive.
+
+## Values that are not supported by stored outputs
+
+Some values in the author's working notes were computed in runs whose outputs were not stored (for example two
+DOP853 tolerances in the Radau comparison). They are not used in the paper and are not part of this archive.
